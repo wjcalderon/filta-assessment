@@ -14,9 +14,6 @@ console/
 /web/sites/*/settings.local.php
 /web/sites/*/development.services.yml
 
-# Ignore Drupal's file directory
-/web/sites/*/files/
-
 # Ignore SimpleTest multi-site environment.
 /web/sites/simpletest
 
@@ -27,7 +24,6 @@ console/
 /.env
 
 # Ignore mounts
-web/sites/default/files
 tmp
 private
 .drush
@@ -37,6 +33,5 @@ drush-backups
 # Ignore backups
 *.sql
 *.zip
-*.gz
 
 .DS_Store
