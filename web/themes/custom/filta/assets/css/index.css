@@ -1,0 +1,132 @@
+html,
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+li {
+  list-style: none;
+  cursor: pointer;
+}
+
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --blue: #337dac;
+  --dark-blue: #1e73aa;
+  --link: #00a3a8;
+  --dark-link: #04888c;
+}
+
+button,
+a.button-primary {
+  background-color: var(--blue);
+  color: var(--white);
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+button:hover,
+a.button-primary:hover {
+  background-color: var(--dark-blue);
+  transform: scale(1.1);
+}
+
+.container {
+  background-color: var(--black);
+  position: relative;
+  height: 3.3rem;
+}
+
+.menu-header-container-item {
+  display: flex;
+  justify-content: stretch;
+  color: var(--white);
+}
+.menu-header-container-item_first-level {
+  padding-top: 1rem;
+  margin-left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.menu-header-container-item_first-level a,
+.menu-header-container-item_first-level span {
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 2rem;
+  text-align: left;
+}
+.menu-header-container-item_first-level_below {
+  display: none;
+  background-color: var(--white);
+  align-items: center;
+  padding: 2rem 2.0625rem 1.375rem;
+  width: 15rem;
+  z-index: 9999;
+  position: absolute;
+  top: 100%;
+  transform: translateX(-50%);
+}
+.menu-header-container-item_first-level_below a,
+.menu-header-container-item_first-level_below span {
+  color: var(--black);
+}
+.menu-header-container-item_first-level_below-item {
+  padding-bottom: 10px;
+}
+.menu-header-container-item_first-level_below-item a {
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--link);
+}
+.menu-header-container-item_first-level_below-item:hover a {
+  color: var(--dark-link);
+}
+.menu-header-container-item_first-level_below.active {
+  display: block;
+}
+.menu-header-container-item a {
+  text-decoration: none;
+}
+
+.product-banner {
+  position: relative;
+  width: 100%;
+  height: 400px;
+}
+.product-banner img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  object-position: center;
+}
+.product-banner-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 10px;
+}
+.product-banner-content-title {
+  color: white;
+  font-size: 50px;
+}
+.product-banner-content-description {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.dynamic-banner-container {
+  margin-top: 20px;
+}
+
+/*# sourceMappingURL=index.css.map */

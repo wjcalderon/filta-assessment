@@ -1,0 +1,188 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Provides a product entity type.
+ */
+
+use Drupal\Core\Render\Element;
+use Drupal\Core\Datetime\DrupalDateTime;
+
+/**
+ * Implements hook_theme().
+ */
+function product_theme(): array
+{
+  return [
+    'product' => ['render element' => 'elements'],
+  ];
+}
+
+/**
+ * Prepares variables for product templates.
+ *
+ * Default template: product.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the product information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_product(array &$variables): void
+{
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function product_entity_presave(Drupal\Core\Entity\EntityInterface $entity)
+{
+  if ($entity->getEntityTypeId() == 'product' && $entity->hasField('field_product_of_the_day')) {
+    if ($entity->field_product_of_the_day->value) {
+
+      $productId = $entity->id();
+      $query = \Drupal::entityTypeManager()
+        ->getStorage('product')
+        ->getQuery()
+        ->accessCheck(TRUE)
+        ->condition('field_product_of_the_day', TRUE)
+        ->condition('id', $productId, '<>')
+        ->count()
+        ->execute();
+      if ($query >= 5) {
+        \Drupal::messenger()->addError('You cannot select more than 5 products as Product of the Day');
+        $entity->set('field_product_of_the_day', FALSE);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_schema().
+ */
+function product_schema()
+{
+  $schema['product_of_the_day'] = array(
+    'description' => 'Stores click history on products of the day.',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'ID',
+      ),
+      'product_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Product ID',
+      ),
+      'created' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Timestamp of creation.',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+
+/**
+ * Get products from the last week
+ */
+function products_from_the_last_week()
+{
+  $dateLastWeek = strtotime('-7 days');
+  // Convert to timestamp
+  $dateLastWeek = date('Y-m-d H:i:s', $dateLastWeek);
+
+  $query = \Drupal::database()->select('product_of_the_day', 'ptd');
+  $query->fields('ptd', ['product_id']);
+  $query->addExpression('COUNT(ptd.product_id)', 'total');
+  $query->condition('ptd.created', strtotime($dateLastWeek), '>');
+  $query->groupBy('ptd.product_id');
+  $query->orderBy('total', 'DESC');
+  $result = $query->execute()->fetchAll();
+
+  $products = [];
+  foreach ($result as $product) {
+    $product->product_id;
+    $getEntityProduct = \Drupal::entityTypeManager()->getStorage('product');
+    $entityProduct = $getEntityProduct->load($product->product_id);
+    if ($entityProduct) {
+      $productTitle = $entityProduct->label();
+      $products[] = $productTitle . ' = ' . $product->total . ' clicks.';
+    }
+  }
+  return $products;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function product_cron()
+{
+  $current_time = new DrupalDateTime('now');
+  //Check that it is Monday and it is 2 o'clock
+  if ($current_time->format('l') === 'Monday' && $current_time->format('H') == 2) {
+    send_feature_products_email();
+  }
+}
+
+/**
+ * Send featured products email
+ */
+function send_feature_products_email()
+{
+  $subject = 'Featured products of the week';
+  $config = \Drupal::config('product.settings');
+  $addressee = $config->get('email');
+  $listOfProducts = products_from_the_last_week();
+
+  $body = 'Hey, this is the list of featured products of the week.' . "\n";
+  foreach ($listOfProducts as $item) {
+    $body .= "-  $item" . "\n";
+  }
+  $body .= 'Bye';
+
+  $params = [
+    'subject' => $subject,
+    'message' => $body,
+  ];
+
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $langcode = \Drupal::currentUser()->getPreferredLangcode();
+
+  $result = $mailManager->mail('product', 'featured_products', $addressee, $langcode, $params, NULL, TRUE);
+
+  if ($result['result'] !== true) {
+    \Drupal::logger('product')->notice('There was a problem sending your message');
+  } else {
+    \Drupal::logger('product')->notice('Featured products email has been sent');
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function product_mail($key, &$message, $params)
+{
+  switch ($key) {
+    case 'featured_products':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      break;
+  }
+}

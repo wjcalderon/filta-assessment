@@ -1,0 +1,14 @@
+entity.product.settings:
+  path: 'admin/structure/product/fields'
+  defaults:
+    _form: '\Drupal\product\Form\ProductSettingsForm'
+    _title: 'Product'
+  requirements:
+    _permission: 'administer product'
+
+product.save_featured_product:
+  path: '/save-featured-product/{product_id}'
+  defaults:
+    _controller: '\Drupal\product\Controller\ProductController::saveFeaturedProduct'
+  requirements:
+    _access: 'TRUE'
