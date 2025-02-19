@@ -3,13 +3,13 @@
 
 {% if content %}
 	<div>
-		<h2 class="product-banner-title">Product of the day</h2>
+		<h2 class="product-banner-title">{{block_title}}</h2>
 		<div class="product-banner">
 			{{content.field_image}}
 			<div class="product-banner-content">
 				<h2 class="product-banner-content-title">{{content.label[0]['#context'].value}}</h2>
-				<p class="product-banner-content-description">{{content.field_summary[0]['#text']|striptags}}</p>
-				<a href="/product/{{entity_id}}" class="button-primary">See more</a>
+				<p class="product-banner-content-description">{{content.field_summary[0]['#text']}}</p>
+				<button type="button" nid={{entity_id}} class="product-banner-content-btn button-primary">See more</button>
 			</div>
 		</div>
 	</div>
