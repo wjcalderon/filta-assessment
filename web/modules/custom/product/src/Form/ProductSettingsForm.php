@@ -1,31 +1,64 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\product\Form;
 
-use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
+ * Class ConfigForm.
+ *
  * Configuration form for a product entity type.
  */
-final class ProductSettingsForm extends FormBase {
+class ProductSettingsForm extends ConfigFormBase
+{
+
+  /**
+   * Config settings.
+   *
+   * @var string
+   */
+  const SETTINGS = 'product.settings';
 
   /**
    * {@inheritdoc}
    */
-  public function getFormId(): string {
+  public function getFormId(): string
+  {
     return 'product_settings';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state): array {
+  protected function getEditableConfigNames()
+  {
+    return [
+      static::SETTINGS,
+    ];
+  }
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state): array
+  {
+    $config = $this->config(static::SETTINGS);
 
-    $form['settings'] = [
-      '#markup' => $this->t('Settings form for a product entity type.'),
+    $form['title'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Title of the block'),
+      '#default_value' => $config->get('title'),
+      '#size' => 60,
+      '#maxlength' => 128,
+      '#required' => TRUE,
+    ];
+
+    $form['email'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Email'),
+      '#default_value' => $config->get('email'),
+      '#placeholder' => $this->t('Example account1@gmail.com,account2@gmail.com'),
+      '#description' => $this->t('Comma separated emails to receive the Product of the Day report.'),
     ];
 
     $form['actions'] = [
@@ -42,8 +75,14 @@ final class ProductSettingsForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $this->messenger()->addStatus($this->t('The configuration has been updated.'));
-  }
+  public function submitForm(array &$form, FormStateInterface $form_state): void
+  {
+    // Retrieve the configuration.
+    $this->config(static::SETTINGS)
+      ->set('title', $form_state->getValue('title'))
+      ->set('email', $form_state->getValue('email'))
+      ->save();
 
+    parent::submitForm($form, $form_state);
+  }
 }

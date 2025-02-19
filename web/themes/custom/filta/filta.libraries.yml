@@ -8,6 +8,10 @@ global-styling:
       minified: true,
       attributes: { defer : false }
     }
+    assets/js/_product.js: {
+      minified: true,
+      attributes: { defer : false }
+    }
 
   dependencies:
     - core/drupal
