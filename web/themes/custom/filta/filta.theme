@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter()).
+ */
+function filta_theme_suggestions_product_alter(array &$suggestions, array $variables)
+{
+  $suggestions[] = 'product__' . $variables['elements']['#view_mode'];
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK()).
+ */
+function filta_preprocess_product(array &$variables)
+{
+  $variables['entity_id'] = $variables['elements']['#contextual_links']['product']['route_parameters']['product'];
+}

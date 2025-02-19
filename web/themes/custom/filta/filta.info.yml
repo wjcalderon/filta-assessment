@@ -1,0 +1,19 @@
+name: Filta theme
+type: theme
+base theme: olivero
+description: 'A drupal custom theme'
+package: custom
+core_version_requirement: ^10 || ^11
+regions:
+  header: 'Header'
+  main_menu: 'Main menu'
+  content: 'Content'
+  sidebar: 'Sidebar'
+  footer: 'Footer'
+  hidden: 'Hidden'
+libraries:
+  - filta/global-styling
+components:
+  namespaces:
+    filta:
+      - src/components

@@ -1,0 +1,3 @@
+administer product:
+  title: 'Administer products'
+  restrict access: true
