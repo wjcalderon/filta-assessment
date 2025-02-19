@@ -1,0 +1,5 @@
+name: Menu links module
+description: Manage custom features on the menu behavior
+package: Custom
+type: module
+core_version_requirement: ^10.3 || ^11

@@ -1,0 +1,17 @@
+# Ignore compiled files.
+dist
+
+# Yarn/NPM
+node_modules
+
+# Storybook
+.out
+
+# System
+.DS_Store
+
+# Git deploy
+.publish
+
+# Composer
+composer.lock

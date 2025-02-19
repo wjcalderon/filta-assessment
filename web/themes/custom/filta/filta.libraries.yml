@@ -1,0 +1,19 @@
+global-styling:
+  version: 1.x
+  css:
+    theme:
+      assets/css/index.css: {}
+  js:
+    assets/js/_menu-links.js: {
+      minified: true,
+      attributes: { defer : false }
+    }
+    assets/js/_product.js: {
+      minified: true,
+      attributes: { defer : false }
+    }
+
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/js-cookie

@@ -1,0 +1,27 @@
+{% if items %}
+	<div class="container">
+		<div class="container-menu">
+			<ul{{attributes.addClass('menu-header-container-item')}}>
+				{% for item in items %}
+					<li{{item.attributes.setAttribute('data-menu-id',item.original_link.getPluginDefinition()['metadata']['entity_id'])}} class="menu-header-container-item_first-level">
+						{{ link(item.title, item.url) }}
+						{% if item.below %}
+							<img src="/themes/custom/filta/assets/icons/angle-down-solid.svg" alt="Angle down solid" width="18"/>
+							<ul{{item.attributes.addClass('menu-header-container-item_first-level_below')}}>
+								{% for below in item.below %}
+									<li{{below.attributes.addClass('menu-header-container-item_first-level_below-item')}}>
+										{% if 'social-network-item' in below.attributes.addClass %}
+											{{ link('', below.url) }}
+										{% else %}
+											{{ link(below.title, below.url) }}
+										{% endif %}
+									</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+{% endif %}

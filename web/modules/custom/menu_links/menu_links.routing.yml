@@ -1,0 +1,6 @@
+menu_links.menu_parent_image:
+  path: '/get-parent-image/{menu_item_id}'
+  defaults:
+    _controller: '\Drupal\menu_links\Controller\MenuController::getParentImage'
+  requirements:
+    _access: 'TRUE'
